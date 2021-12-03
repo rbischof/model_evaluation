@@ -88,6 +88,7 @@ def mean_correction_factor_plot(y:np.array, pred:np.array, labels:list, path:str
     plt.ylabel('Mean Correction Factor $\hat{b}$')
     plt.xticks(np.linspace(1, b_bar.shape[0], b_bar.shape[0], endpoint=True), labels=labels, rotation=45, ha='right')
     plt.legend(fontsize=24)
+    plt.grid(color='0.5')
     plt.tight_layout()
     plt.savefig(os.path.join(path, 'mean_correction_factor'), dpi=100)
     plt.show()
@@ -141,14 +142,14 @@ def ratio_plot(y:np.array, pred:np.array, labels:list, path:str):
         plt.close()
 
 
-def taylor_plot(model_names:list, preds:list, y:np.array, labels:list, path:str,
+def taylor_plot(model_names:list, y:np.array, preds:list, labels:list, path:str,
                 marker_symbols:list=['o','P','X','v','^','>','<'], 
                 marker_colors:list=['b','r','g','c','m','y','k'], 
                 font_size=20, marker_size=15):
     """
     model_names : list of strings
-    preds : list of np.arrays, must be of same length as model_names
     y     : output variables as np.array
+    preds : list of np.arrays, must be of same length as model_names
     labels : list of output variable names, must be of same length as model_names
     path  : string where to store the figures
     marker_symbols : list of characters defining a pyplot symbol, must be at least of same length as model_names
