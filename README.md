@@ -15,7 +15,7 @@ plot_functions.py contains a set of functions that can be called to evaluate the
 
 `ratio_plot(y, predictions, labels, path)` takes two-dimensional np.array y (# of samples, # of output variables), two-dimensional np.array predictions (# of samples, # of output variables), list of output variable names of length (# of output variables), path as string defining the location where to save the figures to.
 
-![Ratio Plot](/examples/ratio_plot.png)
+![Ratio Plot](/examples/_true_prediction.png)
 
 `taylor_plot(model_names, y, predictions, labels, path)` takes list of model names, two-dimensional np.array y (# of samples, # of output variables), list of two-dimensional np.array predictions (# of samples, # of output variables) of same length as model_names, list of output variable names of length (# of output variables), path as string defining the location where to save the figures to.
 
