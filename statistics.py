@@ -137,57 +137,58 @@ def ratio_plot(y:np.array, pred:np.array, labels:list, path:str):
         plt.close()
 
 
-def taylor_plot(model_names:list, preds:list, y:np.array, name:str, 
+def taylor_plot(model_names:list, preds:list, y:np.array, labels:list, 
                 marker_symbols:list=['o','P','X','v','^','>','<'], 
                 marker_colors:list=['b','r','g','c','m','y','k']):
     """
     model_names : list of strings
-    preds : list of np.arrays, one array per model
+    preds : list of np.arrays, must be of same length as model_names
     y     : output variables as np.array
-    name  : name of the plot
-    marker_symbols : list of characters defining a pyplot symbol
-    marker_colors : list of characters defining a pyplot color
+    labels : list of output variable names, must be of same length as model_names
+    marker_symbols : list of characters defining a pyplot symbol, must be at least of same length as model_names
+    marker_colors : list of characters defining a pyplot color, must be at least of same length as model_names
     """
     # Set the figure properties (optional)
     rcParams["figure.figsize"] = [8.0, 6.4]
     rcParams['lines.linewidth'] = 2 # line width for plots
     rcParams.update({'font.size': 20}) # font size of axes text
     
-    # Calculate statistics for Taylor diagram
-    # The first array element (e.g. taylor_stats[0][0]) corresponds to the 
-    # reference series while the second and subsequent elements
-    # (e.g. taylor_stats[0][1:]) are those for the predicted series.
-    taylor_stats = [skm.taylor_statistics(preds[i], y, 'data') for i in range(len(preds))]
-    
-    # Store statistics in arrays
-    sdev  = np.array([taylor_stats[0]['sdev'][0]] + [taylor_stats[i]['sdev'][1] for i in range(len(preds))])
-    crmsd = np.array([taylor_stats[0]['crmsd'][0]] + [taylor_stats[i]['crmsd'][1] for i in range(len(preds))])
-    ccoef = np.array([taylor_stats[0]['ccoef'][0]] + [taylor_stats[i]['ccoef'][1] for i in range(len(preds))])
+    for m in range(len(model_names)):
+        # Calculate statistics for Taylor diagram
+        # The first array element (e.g. taylor_stats[0][0]) corresponds to the 
+        # reference series while the second and subsequent elements
+        # (e.g. taylor_stats[0][1:]) are those for the predicted series.
+        taylor_stats = [skm.taylor_statistics(preds[i][:, m], y[:, m], 'data') for i in range(len(preds))]
+        
+        # Store statistics in arrays
+        sdev  = np.array([taylor_stats[0]['sdev'][0]] + [taylor_stats[i]['sdev'][1] for i in range(len(preds))])
+        crmsd = np.array([taylor_stats[0]['crmsd'][0]] + [taylor_stats[i]['crmsd'][1] for i in range(len(preds))])
+        ccoef = np.array([taylor_stats[0]['ccoef'][0]] + [taylor_stats[i]['ccoef'][1] for i in range(len(preds))])
 
-    '''
-    Produce the Taylor diagram
-    Note that the first index corresponds to the reference series for 
-    the diagram. For example sdev[0] is the standard deviation of the 
-    reference series and sdev[1:4] are the standard deviations of the 
-    other 3 series. The value of sdev[0] is used to define the origin 
-    of the RMSD contours. The other values are used to plot the points 
-    (total of 3) that appear in the diagram.
-    For an exhaustive list of options to customize your diagram, 
-    please call the function at a Python command line:
-    >> taylor_diagram
-    '''
-    labels = [''] + model_names
-    skm.taylor_diagram(sdev, crmsd, ccoef, markerLabel=labels, markerLabelColor='r', 
-                    markerLegend='on', markerSymbols=marker_symbols, markerColors=marker_colors,
-                    styleOBS = '-', colOBS = 'm',
-                    markerSize = 15, 
-                    tickRMS=[0.5, 1., 1.5],
-                    tickSTD=[0, 0.5, 1, 1.5],
-                    axismax=1.5, titlestd='on')
+        '''
+        Produce the Taylor diagram
+        Note that the first index corresponds to the reference series for 
+        the diagram. For example sdev[0] is the standard deviation of the 
+        reference series and sdev[1:4] are the standard deviations of the 
+        other 3 series. The value of sdev[0] is used to define the origin 
+        of the RMSD contours. The other values are used to plot the points 
+        (total of 3) that appear in the diagram.
+        For an exhaustive list of options to customize your diagram, 
+        please call the function at a Python command line:
+        >> taylor_diagram
+        '''
+        labels = [''] + model_names
+        skm.taylor_diagram(sdev, crmsd, ccoef, markerLabel=labels, markerLabelColor='r', 
+                        markerLegend='on', markerSymbols=marker_symbols, markerColors=marker_colors,
+                        styleOBS = '-', colOBS = 'm',
+                        markerSize = 15, 
+                        tickRMS=[0.5, 1., 1.5],
+                        tickSTD=[0, 0.5, 1, 1.5],
+                        axismax=1.5, titlestd='on')
 
-    # Write plot to file
-    plt.savefig('taylor_diagram_'+name+'.png')
+        # Write plot to file
+        plt.savefig('taylor_diagram_'+labels[m]+'.png')
 
-    # Show plot
-    plt.show()
-    plt.close()
+        # Show plot
+        plt.show()
+        plt.close()
